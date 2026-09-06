@@ -1,122 +1,163 @@
- PersonaPulse AI
-AI-Powered Multi-Platform Content Personalization Engine
+# PersonaPulse AI
 
-Built with Amazon Bedrock (Serverless)
+### AI-Powered Multi-Platform Content Personalization
 
- Overview
+PersonaPulse AI is a serverless content personalization platform that transforms a single content idea into platform-specific, audience-aware content using **Amazon Bedrock**.
 
-PersonaPulse AI transforms a single content idea into platform-optimized, audience-personalized posts using Generative AI.
+The application allows users to provide an idea, select a target platform, audience, and tone, and receive structured content containing a hook, main content, call-to-action, hashtags, and an engagement score.
 
-Instead of manually rewriting content for LinkedIn, Instagram, Twitter, YouTube, or blogs, PersonaPulse intelligently adapts tone, structure, and engagement strategy using Amazon Bedrock foundation models.
+Built as part of the **AI for Bharat Hackathon**, the project demonstrates how generative AI can be integrated into a practical content creation workflow using AWS serverless services.
 
-This project demonstrates meaningful AI usage in real-world content workflows.
+---
 
-Problem Statement
+## Features
 
-Content creators, students, startups, and marketing teams struggle with:
+* Generate content from a single idea
+* Customize content for different platforms
+* Select a target audience
+* Customize the tone of generated content
+* Generate structured content with:
 
-Rewriting content for multiple platforms
+  * Hook
+  * Content
+  * Call-to-action
+  * Hashtags
+* Rule-based engagement scoring
+* AI-powered prompt conditioning
+* Serverless backend using AWS Lambda and Amazon Bedrock
+* React-based web interface
 
-Adjusting tone for different audiences
+### Supported Platforms
 
-Maintaining brand consistency
+* LinkedIn
+* Instagram
+* Twitter/X
+* YouTube
+* Blog
 
-Improving engagement without guesswork
+---
 
-Manual rewriting is repetitive and time-consuming.
+## How It Works
 
-Solution
-
-PersonaPulse AI:
-
-Accepts a core idea
-
-Adapts it for selected platform
-
-Personalizes tone and audience
-
-Generates structured output (Hook, Content, CTA, Hashtags)
-
-Predicts engagement score
-
-All powered by Amazon Bedrock.
-
- Why AI?
-
-This problem requires:
-
-Semantic understanding
-
-Context-aware rewriting
-
-Tone transformation
-
-Platform-aware formatting
-
-Structured JSON generation
-
-Traditional rule-based systems cannot handle this.
-
-Amazon Bedrock enables intelligent, scalable content transformation.
-
-Architecture
-User (Browser)
-      ↓
-React Frontend (SPA)
-      ↓
+```text
+User
+  │
+  ▼
+React Frontend
+  │
+  │ POST /generate
+  ▼
 Amazon API Gateway
-      ↓
+  │
+  ▼
 AWS Lambda
-      ↓
-Amazon Bedrock (Nova Micro)
-      ↓
-Structured JSON Response
-      ↓
-Frontend Rendering
+  │
+  ├── Input Validation
+  ├── Prompt Construction
+  ├── Engagement Scoring
+  │
+  ▼
+Amazon Bedrock
+  │
+  ▼
+Structured Content
+  │
+  ▼
+React Frontend
+```
 
- AWS Services Used
+The frontend collects the user's content idea and preferences and sends them to the backend through an API Gateway endpoint.
 
-Amazon Bedrock (Nova Micro – Serverless)
+The Lambda function builds a platform- and audience-aware prompt and sends it to **Amazon Bedrock (Amazon Nova Micro)**. The generated response is parsed into a structured format and returned to the frontend along with an engagement score.
 
-AWS Lambda (Backend logic)
+---
 
-Amazon API Gateway (REST endpoint)
+## Tech Stack
 
-IAM Roles (Secure Bedrock access)
+### Frontend
 
-CloudWatch (Monitoring & Logs)
+* React
+* JavaScript
+* HTML
+* CSS
 
-Features
+### Backend
 
-Platform selection (LinkedIn, Instagram, Twitter, YouTube, Blog)
+* Python
+* AWS Lambda
+* Amazon API Gateway
+* Amazon Bedrock
+* Boto3
 
-Audience targeting
+### AI
 
-Tone customization
+* Amazon Nova Micro
+* Prompt Engineering
+* Structured JSON Generation
 
-Structured JSON output
+### Cloud & Infrastructure
 
-Engagement scoring system
+* AWS IAM
+* AWS CloudWatch
+* Serverless Architecture
 
-AI-powered prompt conditioning
+---
 
-Serverless scalable backend
+## Architecture
 
-Futuristic AI frontend UI
+PersonaPulse follows a lightweight serverless architecture:
 
-API Structure
-Endpoint
-POST /generate
+```text
+┌────────────────────┐
+│    React Frontend  │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│   API Gateway      │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│    AWS Lambda      │
+│                    │
+│ • Validation       │
+│ • Prompt Building  │
+│ • AI Orchestration │
+│ • Scoring          │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│  Amazon Bedrock    │
+│   Nova Micro       │
+└────────────────────┘
+```
 
-Request Body
+The current implementation is **stateless** and does not require a persistent database.
+
+---
+
+## API
+
+### `POST /generate`
+
+Generates personalized content based on the provided input.
+
+#### Request
+
+```json
 {
   "idea": "AI transforming rural education",
   "platform": "LinkedIn",
   "audience": "Students",
   "tone": "Professional"
 }
+```
 
-Response Body
+#### Response
+
+```json
 {
   "hook": "...",
   "content": "...",
@@ -124,87 +165,157 @@ Response Body
   "hashtags": "...",
   "engagement_score": 85
 }
+```
 
-Project Structure
+---
+
+## Engagement Scoring
+
+PersonaPulse includes a lightweight engagement scoring mechanism to provide a quick estimate of content engagement potential.
+
+The current scoring logic considers factors such as:
+
+* Presence of questions
+* Use of exclamation marks
+* Content length
+* Presence of a call-to-action
+
+The score is normalized to a maximum of **100**.
+
+> The engagement score is a heuristic score and is not a machine-learning prediction model.
+
+---
+
+## Project Structure
+
+```text
 PersonaPulse/
 │
-├── frontend/        # React SPA
-├── backend/         # Lambda + Bedrock integration
-├── requirements.md  # Functional & Non-functional requirements
-├── design.md        # System design document
+├── backend/
+│   ├── bedrock_client.py
+│   ├── engagement_scoring.py
+│   ├── lambda_handler.py
+│   ├── prompt_engine.py
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── public/
+│   └── src/
+│
+├── docs/
+│   ├── technical_blog_draft.md
+│   └── video_pitch_script.md
+│
+├── infrastructure/
+│   ├── architecture_diagram.png
+│   └── aws_setup.md
+│
+├── design.md
+├── requirements.md
 ├── README.md
 └── LICENSE
+```
 
- Local Setup
-Frontend
+---
+
+## Running Locally
+
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd PersonaPulse
+```
+
+### 2. Install frontend dependencies
+
+```bash
 cd frontend
 npm install
+```
+
+### 3. Start the frontend
+
+```bash
 npm start
+```
 
+The React application will run at:
 
-Runs on:
-
+```text
 http://localhost:3000
+```
 
-Deployment
+### Backend
 
-Backend deployed as:
+The backend is designed to run through **AWS Lambda** and requires access to Amazon Bedrock.
 
-AWS Lambda (Python)
+AWS configuration and deployment details are available in:
 
-API Gateway (Regional REST API)
+```text
+infrastructure/aws_setup.md
+```
 
-Bedrock Serverless Model (Nova Micro)
+---
 
- Scalability
+## AWS Services
 
-Fully serverless
+| Service            | Purpose                          |
+| ------------------ | -------------------------------- |
+| Amazon Bedrock     | Generative AI content generation |
+| AWS Lambda         | Serverless backend processing    |
+| Amazon API Gateway | REST API endpoint                |
+| AWS IAM            | Access control and permissions   |
+| Amazon CloudWatch  | Logging and monitoring           |
 
-Auto-scaling Lambda
+---
 
-Stateless backend
+## Why Generative AI?
 
-Bedrock managed inference
+Traditional rule-based systems can modify predefined templates, but they struggle with understanding context and adapting content naturally across different platforms and audiences.
 
-Horizontally scalable architecture
+PersonaPulse uses generative AI for:
 
- Security
+* Context-aware content generation
+* Platform-specific adaptation
+* Audience personalization
+* Tone transformation
+* Structured content generation
 
-IAM role-based Bedrock access
+Prompt conditioning is used to guide the model toward consistent, structured responses.
 
-HTTPS-only API communication
+---
 
-Input validation
+## Future Improvements
 
-No persistent sensitive data storage
+Potential extensions include:
 
-🛣 Future Roadmap
+* Brand voice customization
+* Multi-platform batch generation
+* Content versioning
+* A/B content generation
+* Content calendar integration
+* Analytics dashboard
+* User authentication
+* Persistent content storage
+* Automated deployment infrastructure
 
-Brand voice memory
+These features are **not part of the current implementation** and represent possible future development.
 
-Multi-platform batch generation
+---
 
-A/B testing
+## Hackathon
 
-Content calendar
+Built for the **AI for Bharat Hackathon**.
 
-Analytics dashboard
+### Focus
 
-User authentication (Cognito)
+**Meaningful AI for real-world content and digital experiences**
 
-S3 content storage
+The project explores how generative AI and serverless cloud infrastructure can reduce the effort required to adapt content for different audiences and platforms.
 
-CloudFront deployment
+---
 
-Demo
+## License
 
-Video pitch available in submission materials.
-
-Built For Hackathon
-
-Track: AI for Media, Content & Digital Experiences
-Theme: Meaningful AI for real-world workflows
-
- License
-
-MIT License
+This project is licensed under the **MIT License**.
